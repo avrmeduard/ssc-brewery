@@ -7,7 +7,7 @@ import org.springframework.security.config.annotation.authentication.builders.Au
 import org.springframework.security.config.annotation.web.builders.HttpSecurity;
 import org.springframework.security.config.annotation.web.configuration.EnableWebSecurity;
 import org.springframework.security.config.annotation.web.configuration.WebSecurityConfigurerAdapter;
-import org.springframework.security.crypto.password.NoOpPasswordEncoder;
+import org.springframework.security.crypto.factory.PasswordEncoderFactories;
 import org.springframework.security.crypto.password.PasswordEncoder;
 
 @Configuration
@@ -16,7 +16,7 @@ public class SecurityConfig extends WebSecurityConfigurerAdapter {
 
     @Bean
     PasswordEncoder passwordEncoder() {
-        return NoOpPasswordEncoder.getInstance();
+        return PasswordEncoderFactories.createDelegatingPasswordEncoder();
     }
 
     @Override
@@ -40,13 +40,14 @@ public class SecurityConfig extends WebSecurityConfigurerAdapter {
     protected void configure(AuthenticationManagerBuilder auth) throws Exception {
         auth.inMemoryAuthentication()
                 .withUser("spring")
-                .password("guru")
+                .password("{bcrypt}$2a$10$KsYnh/zsaFNTTTfaRCjW0uExIk91acdYav.GBeYAW8j0BORVcnheO")
                 .roles("ADMIN")
                 .and()
                 .withUser("user")
-                .password("password")
+                .password("{sha256}694501ade53d69a9fb21caf50ed11a7c800548bc32907078bb668ba14e379bd015223ebe0768a745")
                 .roles("USER");
 
+        auth.inMemoryAuthentication().withUser("scott").password("{noop}tiger").roles("CUSTOMER");
     }
 
     //    @Override
